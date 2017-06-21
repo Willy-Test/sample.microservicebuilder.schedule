@@ -13,11 +13,21 @@ spec:
       - name: microservice-schedule
         image: microservice-schedule:latest
         env:
-        - name: EXTERNAL_IP_ADDR
-          valueFrom:
-            configMapKeyRef:
-              name: ipaddr-config
-              key: EXTERNAL_IP_ADDR
+          - name: MB_KEYSTORE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mb-keystore-password
+                key: password
+          - name: MB_TRUSTSTORE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mb-truststore-password
+                key: password
+          - name: EXTERNAL_IP_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: ipaddr-config
+                key: EXTERNAL_IP_ADDR
         ports:
           - containerPort: 9080
         imagePullPolicy: IfNotPresent
@@ -31,13 +41,13 @@ spec:
       volumes:
       - name: keystore
         secret:
-          secretName: wlp-keystore
+          secretName: mb-keystore
       - name: truststore
         secret:
-          secretName: wlp-truststore
+          secretName: mb-truststore
       - name: liberty-config
         configMap:
-          name: liberty-config
+          name: liberty-logging-config
           items:
             - key: keystore.xml
               path: defaults/keystore.xml
