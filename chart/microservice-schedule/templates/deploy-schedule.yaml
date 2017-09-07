@@ -37,7 +37,7 @@ spec:
                 key: password
 {{ end }}
         volumeMounts:
-{{ if ne .Values.test true }}        
+{{ if ne .Values.test true }}
 	- name: keystore
           mountPath: /etc/wlp/config/keystore
         - name: truststore
