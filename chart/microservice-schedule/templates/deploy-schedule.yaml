@@ -38,7 +38,7 @@ spec:
 {{ end }}
         volumeMounts:
 {{ if ne .Values.test true }}
-	- name: keystore
+        - name: keystore
           mountPath: /etc/wlp/config/keystore
         - name: truststore
           mountPath: /etc/wlp/config/truststore
