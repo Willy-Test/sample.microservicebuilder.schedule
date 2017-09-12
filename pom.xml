@@ -29,8 +29,8 @@
     <properties>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
-      <docker.file.dir>artifacts</docker.file.dir>
-      <webxml.path></webxml.path>
+      <!--<docker.file.dir>artifacts</docker.file.dir>
+      <webxml.path></webxml.path>-->
     </properties>
 
     <repositories>
@@ -38,6 +38,11 @@
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
       </repository>
+        <repository>
+            <id>liberty-starter-maven-repo</id>
+            <name>liberty-starter-maven-repo</name>
+            <url>http://liberty-app-accelerator.wasdev.developer.ibm.com/start/api/v1/repo</url>
+        </repository>
     </repositories>
 
     <build>
@@ -100,6 +105,13 @@
             <artifactId>microprofile</artifactId>
             <scope>provided</scope>
             <version>2016.10.0</version>
+        </dependency>
+		<dependency>
+            <groupId>net.wasdev.wlp.starters.ms-builder</groupId>
+            <artifactId>metrics</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     
