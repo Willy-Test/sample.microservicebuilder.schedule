@@ -36,9 +36,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Timed;
-
 import io.microprofile.showcase.schedule.model.Schedule;
 import io.microprofile.showcase.schedule.persistence.ScheduleDAO;
 
@@ -53,7 +50,6 @@ public class ScheduleResource {
     private ScheduleDAO scheduleDAO;
 
     @POST
-    @Counted(monotonic = true)
     public Response add(final Schedule schedule) {
         final Schedule created = scheduleDAO.addSchedule(schedule);
         return Response.created(URI.create("/" + created.getId()))
@@ -65,7 +61,6 @@ public class ScheduleResource {
     @GET
     @Path("/nessProbe")
     @Produces(MediaType.TEXT_PLAIN)
-    @Counted(monotonic = true)
     public Response nessProbe() throws Exception {
 
         return Response.ok("schedule ready at " + Calendar.getInstance().getTime()).build();
@@ -81,7 +76,6 @@ public class ScheduleResource {
 
     @GET
     @Path("/all")
-    @Timed
     public Response allSchedules() {
         final List<Schedule> allSchedules = scheduleDAO.getAllSchedules();
         final GenericEntity<List<Schedule>> entity = buildEntity(allSchedules);
@@ -90,7 +84,6 @@ public class ScheduleResource {
 
     @GET
     @Path("/venue/{id}")
-    @Counted(monotonic = true)
     public Response allForVenue(@PathParam("id") final String id) {
         final List<Schedule> schedulesByVenue = scheduleDAO.findByVenue(id);
         final GenericEntity<List<Schedule>> entity = buildEntity(schedulesByVenue);
@@ -99,7 +92,6 @@ public class ScheduleResource {
 
     @GET
     @Path("/active/{dateTime}")
-    @Counted(monotonic = true)
     public Response activeAtDate(@PathParam("dateTime") final String dateTimeString) {
         final LocalDateTime dateTime = LocalDateTime.parse(dateTimeString);
         final List<Schedule> schedulesByDate = scheduleDAO.findByDate(dateTime.toLocalDate());
@@ -112,7 +104,6 @@ public class ScheduleResource {
 
     @GET
     @Path("/all/{date}")
-    @Counted(monotonic = true)
     public Response allForDay(@PathParam("date") final String dateString) {
         final LocalDate date = LocalDate.parse(dateString);
         final List<Schedule> schedulesByDate = scheduleDAO.findByDate(date);
@@ -121,8 +112,7 @@ public class ScheduleResource {
     }
 
     @DELETE
-    @Path("/{sch	eduleId}")
-    @Counted(monotonic = true)
+    @Path("/{scheduleId}")
     public Response remove(@PathParam("scheduleId") final String scheduleId) {
         scheduleDAO.deleteSchedule(scheduleId);
         return Response.noContent().build();
