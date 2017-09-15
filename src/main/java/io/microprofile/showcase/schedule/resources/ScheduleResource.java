@@ -37,6 +37,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import io.microprofile.showcase.schedule.model.Schedule;
@@ -47,6 +49,7 @@ import io.microprofile.showcase.schedule.persistence.ScheduleDAO;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/")
+@Metered(name="io.microprofile.showcase.schedule.resources.ScheduleResource.Type.Metered")
 public class ScheduleResource {
 
     @Inject
@@ -82,6 +85,7 @@ public class ScheduleResource {
     @GET
     @Path("/all")
     @Timed
+    @Metric(name="io.microprofile.showcase.schedule.resources.ScheduleResource.allSchedules.Metric")
     public Response allSchedules() {
         final List<Schedule> allSchedules = scheduleDAO.getAllSchedules();
         final GenericEntity<List<Schedule>> entity = buildEntity(allSchedules);

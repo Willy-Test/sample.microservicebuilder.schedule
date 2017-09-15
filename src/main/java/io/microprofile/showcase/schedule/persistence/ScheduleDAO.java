@@ -34,6 +34,8 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import io.microprofile.showcase.bootstrap.BootstrapData;
@@ -42,6 +44,7 @@ import io.microprofile.showcase.schedule.model.adapters.LocalDateAdapter;
 import io.microprofile.showcase.schedule.model.adapters.LocalTimeAdapter;
 
 @ApplicationScoped
+@Metered(name="io.microprofile.showcase.schedule.persistence.ScheduleDAO.Type.Metered")
 public class ScheduleDAO {
 
 
@@ -132,6 +135,7 @@ public class ScheduleDAO {
     }
     
     @Timed
+    @Metric
     public List<Schedule> getAllSchedules() {
         return new ArrayList<>(scheduleMap.values());
     }
