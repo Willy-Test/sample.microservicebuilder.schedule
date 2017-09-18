@@ -38,11 +38,11 @@
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
       </repository>
-        <repository>
+       <!--  <repository>
             <id>liberty-starter-maven-repo</id>
             <name>liberty-starter-maven-repo</name>
             <url>http://liberty-app-accelerator.wasdev.developer.ibm.com/start/api/v1/repo</url>
-        </repository>
+        </repository>--> 
     </repositories>
 
     <build>
@@ -106,7 +106,7 @@
             <scope>provided</scope>
             <version>2016.10.0</version>
         </dependency>
-		<dependency>
+		<!-- <dependency>
             <groupId>net.wasdev.wlp.starters.ms-builder</groupId>
             <artifactId>metrics</artifactId>
             <version>1.0</version>
@@ -119,7 +119,19 @@
             <version>1.0</version>
             <type>jar</type>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
+		<dependency>
+  			<groupId>org.eclipse.microprofile.metrics</groupId>
+  			<artifactId>microprofile-metrics-api</artifactId>
+  			<version>1.0</version>
+            <scope>provided</scope>
+		</dependency>        
+		<dependency>
+  			<groupId>org.eclipse.microprofile.health</groupId>
+  			<artifactId>microprofile-health-api</artifactId>
+  			<version>1.0</version>
+            <scope>provided</scope>
+		</dependency>        
     </dependencies>
     
     <profiles> 
