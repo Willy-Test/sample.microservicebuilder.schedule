@@ -60,6 +60,7 @@ spec:
                path: defaults/keystore.xml
              - key: logging.xml
                path: defaults/logging.xml
+          optional: true
 ---
 apiVersion: v1
 kind: Service
