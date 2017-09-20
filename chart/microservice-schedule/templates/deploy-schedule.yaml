@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: microservice-schedule
-        image: {{ default "microservice-schedule:latest" .Values.image }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
 #       env:
 #       - name: EXTERNAL_IP_ADDR
 #         valueFrom:
