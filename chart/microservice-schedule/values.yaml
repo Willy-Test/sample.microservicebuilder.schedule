@@ -1,0 +1,4 @@
+image:
+  repository: "microservice-schedule"
+  tag: "latest"
+test: false
