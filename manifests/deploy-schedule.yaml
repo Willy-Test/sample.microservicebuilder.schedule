@@ -26,6 +26,11 @@ spec:
           - containerPort: 9443
         imagePullPolicy: IfNotPresent
         env:
+          - name: isAppDown
+            valueFrom:
+              configMapKeyRef:
+                name: appdown
+                key: appdown
           - name: USERNAME
             value: admin
           - name: PASSWORD
