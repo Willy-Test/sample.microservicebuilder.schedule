@@ -15,6 +15,8 @@
  */
 package io.microprofile.showcase.schedule.resources;
 
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,6 +44,7 @@ import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
+import io.microprofile.showcase.schedule.health.HealthCheckBean;
 import io.microprofile.showcase.schedule.model.Schedule;
 import io.microprofile.showcase.schedule.persistence.ScheduleDAO;
 
@@ -54,6 +58,7 @@ public class ScheduleResource {
 
     @Inject
     private ScheduleDAO scheduleDAO;
+    private @Inject HealthCheckBean healthCheckBean;
 
     @POST
     @Counted(monotonic = true,tags="app=schedule")
@@ -130,6 +135,15 @@ public class ScheduleResource {
     public Response remove(@PathParam("scheduleId") final String scheduleId) {
         scheduleDAO.deleteSchedule(scheduleId);
         return Response.noContent().build();
+    }
+    
+    @POST
+    @Path("/updateHealthStatus")
+    @Produces(TEXT_PLAIN)
+    @Consumes(TEXT_PLAIN)
+    @Counted(name="io.microprofile.showcase.schedule.resources.ScheduleResource.updateHealthStatus.monotonic.absolute(true)",monotonic=true,absolute=true,tags="app=vote")
+    public void updateHealthStatus(@QueryParam("isAppDown") Boolean isAppDown) {
+    	healthCheckBean.setIsAppDown(isAppDown);
     }
 
     private GenericEntity<List<Schedule>> buildEntity(final List<Schedule> scheduleList) {
