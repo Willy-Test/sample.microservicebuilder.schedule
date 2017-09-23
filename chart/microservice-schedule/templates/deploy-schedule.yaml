@@ -1,7 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: microservice-schedule-sample
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   replicas: 1
   template:
@@ -14,7 +16,7 @@ spec:
     spec:
       containers:
       - name: microservice-schedule
-        image: microservice-schedule:latest
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 #       env:
 #       - name: EXTERNAL_IP_ADDR
 #         valueFrom:
@@ -77,6 +79,7 @@ spec:
                path: defaults/keystore.xml
              - key: logging.xml
                path: defaults/logging.xml
+           optional: true
 ---
 apiVersion: v1
 kind: Service

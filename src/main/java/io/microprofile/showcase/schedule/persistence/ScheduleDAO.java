@@ -15,6 +15,14 @@
  */
 package io.microprofile.showcase.schedule.persistence;
 
+import io.microprofile.showcase.bootstrap.BootstrapData;
+import io.microprofile.showcase.schedule.model.Schedule;
+import io.microprofile.showcase.schedule.model.adapters.LocalDateAdapter;
+import io.microprofile.showcase.schedule.model.adapters.LocalTimeAdapter;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,10 +58,6 @@ public class ScheduleDAO {
 
     @Inject
     BootstrapData bootstrapData;
-    
-    @Inject
-	MetricRegistry metrics;
-
 
     private final AtomicInteger sequence = new AtomicInteger(0);
 
@@ -66,17 +70,6 @@ public class ScheduleDAO {
 
         final LocalDateAdapter dateAdapter = new LocalDateAdapter();
         final LocalTimeAdapter timeAdapter = new LocalTimeAdapter();
-		Gauge<Long> gauge1 = metrics.getGauges().get("io.microprofile.showcase.schedule.persistence.ScheduleDAO.scheduleGauge");
-		if (gauge1 == null) {
-			gauge1 = () -> { return (long) scheduleMap.size(); }; 
-			metrics.register("io.microprofile.showcase.schedule.persistence.ScheduleDAO.scheduleGauge", gauge1);
-		}
-		Gauge<Long> gauge2 = metrics.getGauges().get("io.microprofile.showcase.schedule.persistence.ScheduleDAO.venueGauge");
-		if (gauge2 == null) {
-			gauge2 = () -> { return (long) venues.size(); }; 
-			metrics.register("io.microprofile.showcase.schedule.persistence.ScheduleDAO.venueGauge", gauge2);
-		}
-        
 
         bootstrapData.getSchedules()
                 .forEach(bootstrap -> {
@@ -119,7 +112,6 @@ public class ScheduleDAO {
 
     }
 
-    @Counted(monotonic = true)
     public Schedule addSchedule(final Schedule schedule) {
 
         final String id = String.valueOf(sequence.incrementAndGet());
@@ -139,13 +131,11 @@ public class ScheduleDAO {
     public List<Schedule> getAllSchedules() {
         return new ArrayList<>(scheduleMap.values());
     }
-    
-    @Counted(monotonic = true)
+
     public Optional<Schedule> findById(final String id) {
         return Optional.ofNullable(scheduleMap.get(id));
     }
-    
-    @Counted(monotonic = true)
+
     public Schedule updateSchedule(final Schedule schedule) {
         if (schedule.getId() == null) {
             return addSchedule(schedule);
@@ -154,14 +144,13 @@ public class ScheduleDAO {
         scheduleMap.put(schedule.getId(), schedule);
         return schedule;
     }
-    @Counted(monotonic = true)
+
     public void deleteSchedule(final String scheduleId) {
         if (scheduleId != null) {
             scheduleMap.remove(scheduleId);
         }
     }
 
-    @Counted(monotonic = true)
     public List<Schedule> findByVenue(final String venueId) {
         return scheduleMap.values()
                 .stream()
@@ -169,7 +158,6 @@ public class ScheduleDAO {
                 .collect(Collectors.toList());
     }
 
-    @Counted(monotonic = true)
     public List<Schedule> findByDate(final LocalDate date) {
         return scheduleMap.values()
                 .stream()

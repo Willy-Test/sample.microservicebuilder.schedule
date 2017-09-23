@@ -130,8 +130,8 @@ public class ScheduleResource {
     }
 
     @DELETE
-    @Path("/{sch	eduleId}")
     @Counted(monotonic = true,tags="app=schedule")
+    @Path("/{scheduleId}")
     public Response remove(@PathParam("scheduleId") final String scheduleId) {
         scheduleDAO.deleteSchedule(scheduleId);
         return Response.noContent().build();
