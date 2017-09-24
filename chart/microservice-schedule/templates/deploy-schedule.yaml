@@ -31,8 +31,8 @@ spec:
           - name: isAppDown
             valueFrom:
               configMapKeyRef:
-                name: appdown
-                key: appdown
+                name: scappdown
+                key: scappdown
           - name: USERNAME
             value: admin
           - name: PASSWORD
