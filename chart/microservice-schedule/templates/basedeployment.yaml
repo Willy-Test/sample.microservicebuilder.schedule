@@ -1,33 +1,46 @@
+{{ if .Values.base.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: "{{  .Chart.Name }}-basedeployment"
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
 spec:
-  replicas: 1
+  replicas: {{ .Values.base.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
       labels:
-        name: schedule-deployment
+        app: "{{  .Chart.Name }}-selector"
+        version: "base"
       annotations:
         prometheus.io.scrape: "true"
         prometheus.io/port: "9080"
     spec:
       containers:
-      - name: microservice-schedule
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-#       env:
-#       - name: EXTERNAL_IP_ADDR
-#         valueFrom:
-#           configMapKeyRef:
-#             name: ipaddr-config
-#             key: EXTERNAL_IP_ADDR
-        ports:
-          - containerPort: 9080
-          - containerPort: 9443
-        imagePullPolicy: IfNotPresent
+      - name: "{{  .Chart.Name  }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.base.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{ if .Values.istio.enabled }}
+{{ else }}
+        readinessProbe:
+          httpGet:
+            path: /schedule/nessProbe
+            port: 9080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9080
+          initialDelaySeconds: 120
+          periodSeconds: 15
+{{  end }}
+        resources:
+          requests:
+            cpu: "{{ .Values.image.resources.requests.cpu }}"
+            memory: "{{ .Values.image.resources.requests.memory }}"
         env:
+          - name: PORT
+            value: "{{ .Values.service.servicePort }}"
           - name: isAppDown
             valueFrom:
               configMapKeyRef:
@@ -37,6 +50,7 @@ spec:
             value: admin
           - name: PASSWORD
             value: password
+{{ if ne .Values.test true }}
           - name: MB_KEYSTORE_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -54,16 +68,6 @@ spec:
           mountPath: /etc/wlp/config/truststore
         - name: liberty-config
           mountPath: /config/configDropins
-        readinessProbe:
-          httpGet:
-            path: /schedule/nessProbe
-            port: 9080
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 9080
-          initialDelaySeconds: 120
-          periodSeconds: 15
       volumes:
        - name: keystore
          secret:
@@ -80,13 +84,5 @@ spec:
              - key: logging.xml
                path: defaults/logging.xml
            optional: true
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: schedule-service
-spec:
-  ports:
-    - port: 9080
-  selector:
-    name: schedule-deployment
+{{ end }}
+{{ end }}
