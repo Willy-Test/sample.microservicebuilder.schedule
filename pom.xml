@@ -115,13 +115,79 @@
 		</dependency>
     </dependencies>
     
-    <profiles> 
-         <profile>
+	<!-- The code in 'profiles' has the task of copying the right Dockerfile to the root directory. It's very verbose :( 
+	    The 'secure' profile also adds a web.xml into the packaged war file. -->
+    <profiles>  
+	     <profile>
+			<id>normal - insecure</id>
+			<activation>
+    			<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>    
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.7</version>
+						<executions>
+							<execution>
+								<id>getInsecureDockerfile</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${basedir}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${basedir}/dockerfiles/insecure</directory>
+											<includes>
+												<include>Dockerfile</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+        <profile>
             <id>security</id>
             <properties>
-                <docker.file.dir>artifactsSecured</docker.file.dir>
                 <webxml.path>src/main/liberty/webapp-security/web.xml</webxml.path>                    
-            </properties>            
+            </properties>  
+			<build>
+				<plugins>    
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.7</version>
+						<executions>
+							<execution>
+								<id>getSecureDockerfile</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${basedir}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${basedir}/dockerfiles/secure</directory>
+											<includes>
+												<include>Dockerfile</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
         </profile>         
     </profiles>
 </project>
