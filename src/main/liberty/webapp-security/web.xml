@@ -22,7 +22,7 @@
         <web-resource-collection>
             <web-resource-name>DefaultSecurityConstraints
             </web-resource-name>
-            <url-pattern>/*</url-pattern>
+            <url-pattern>/schedules/*</url-pattern>
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>

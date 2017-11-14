@@ -24,7 +24,7 @@ spec:
 {{ else }}
         readinessProbe:
           httpGet:
-            path: /schedule/nessProbe
+            path: /health #/schedule/nessProbe
             port: 9080
         livenessProbe:
           httpGet:
